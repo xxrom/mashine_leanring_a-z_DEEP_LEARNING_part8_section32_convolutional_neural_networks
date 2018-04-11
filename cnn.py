@@ -24,20 +24,20 @@ classifier = Sequential() # init
 
 # Step 1 - Convolution
 classifier.add(Convolution2D(
-    32, # feature detectores (default 32, next layer 128 or 256)
-    3, # rows for feature detector
-    3, # columns for feature detector
-    border_mode = 'same', # default
-    input_shape = (64, 64, 3), # imput photo format
-      # expected format convert for one shape all photos
-      # colored img = 3 array (rgb) / 3 arrays = (256 X 256)
-      # black and white img = 1 array / 1 array = (256 X 256)
-      # если использовать TensorFlow то сначала размер и потом 1D or 3D
-        # input_shape = (256, 256, 3) если tensorFlow backend
-        # thiana нужно будет (3, 256, 256)
-    activation = 'relu' # rectifier activation function
-    # убираем отрицательные пиксели, чтобы не было линейности в изображении
-  ))
+  32, # feature detectores (default 32, next layer 128 or 256)
+  3, # rows for feature detector
+  3, # columns for feature detector
+  border_mode = 'same', # default
+  input_shape = (64, 64, 3), # imput photo format
+    # expected format convert for one shape all photos
+    # colored img = 3 array (rgb) / 3 arrays = (256 X 256)
+    # black and white img = 1 array / 1 array = (256 X 256)
+    # если использовать TensorFlow то сначала размер и потом 1D or 3D
+      # input_shape = (256, 256, 3) если tensorFlow backend
+      # thiana нужно будет (3, 256, 256)
+  activation = 'relu' # rectifier activation function
+  # убираем отрицательные пиксели, чтобы не было линейности в изображении
+))
 
 # Step 2 - Max Pooling (уменьшаем размер Feature Map другой матрицей 2х2)
 # увеличиваем скорость работы и более устойчив к колебаниям и изменениям
@@ -45,13 +45,25 @@ classifier.add(Convolution2D(
 # и получится Pooling Layer , который нужно будет в вектор превратить
 # и потом передать в Full Connected Layers
 classifier.add(MaxPooling2D(
-    pool_size = (2, 2) # рекомендованное значение чтобы не терять данные
-    ))
+  pool_size = (2, 2) # рекомендованное значение чтобы не терять данные
+))
 
+# Step 3 - Flattening # берем все Feature Maps и в векторз запихиваем =)
+# если пропустить шаги 1,2 и сразу напрямую передать картинку, то
+# у нас не будет информации об отдельныхчастях картинки, только об одной
+classifier.add(Flatten()) # keras сам поймет, что нужно делать, на основе
+  # предыдущего слоя
 
-
-
-
+# Step - 4 Full Connection # создаем полно связанный граф
+classifier.add(Dense(
+  output_dim = 128, # experiment (около 100 надо брать 2 степени)
+  activation = 'relu', # rectifier activation functon
+))
+  # output layer
+classifier.add(Dense(
+  output_dim = 1, # cat or dog
+  activation = 'sigmoid', # sigmoid
+))
 
 
 
