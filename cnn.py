@@ -19,3 +19,42 @@ from keras.layers import MaxPooling2D # for pooling layers (2 step)
 from keras.layers import Flatten # for flattening (3 step)
 from keras.layers import Dense # add fully connected layer in classic ANN
 
+# Initialising the CNN
+classifier = Sequential() # init
+
+# Step 1 - Convolution
+classifier.add(Convolution2D(
+    32, # feature detectores (default 32, next layer 128 or 256)
+    3, # rows for feature detector
+    3, # columns for feature detector
+    border_mode = 'same', # default
+    input_shape = (64, 64, 3), # imput photo format
+      # expected format convert for one shape all photos
+      # colored img = 3 array (rgb) / 3 arrays = (256 X 256)
+      # black and white img = 1 array / 1 array = (256 X 256)
+      # если использовать TensorFlow то сначала размер и потом 1D or 3D
+        # input_shape = (256, 256, 3) если tensorFlow backend
+        # thiana нужно будет (3, 256, 256)
+    activation = 'relu' # rectifier activation function
+    # убираем отрицательные пиксели, чтобы не было линейности в изображении
+  ))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
