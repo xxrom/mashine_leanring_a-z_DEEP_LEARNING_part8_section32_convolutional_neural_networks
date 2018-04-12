@@ -108,10 +108,10 @@ test_set = test_datagen.flow_from_directory(
 
 classifier.fit_generator(
   training_set, # набор изображений для тренеровок
-  steps_per_epoch = 8000,
-  epochs = 25,
+  steps_per_epoch = 8000, # количество изображений для одной эпохи
+  epochs = 25, # эпохи
   validation_data = test_set,# набор изображений для тестирования качества
-  validation_steps = 2000)
+  validation_steps = 2000) # количество тестовых изображений
 
 
 
