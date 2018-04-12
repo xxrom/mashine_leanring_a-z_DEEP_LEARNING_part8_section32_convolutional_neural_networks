@@ -53,7 +53,7 @@ classifier.add(Convolution2D(
   32, # можно увеличить значение до 64
   3,
   3,
-  border_mode = 'same'
+  border_mode = 'same',
   # input_shape = (64, 64, 3), # не нужно добавлять, keras сам разберется
   # так как уже была первая Convlutional2D
   activation = 'relu'
@@ -70,9 +70,14 @@ classifier.add(Flatten()) # keras сам поймет, что нужно дел�
 
 # Step - 4 Full Connection # создаем полно связанный граф
 classifier.add(Dense(
-  output_dim = 512, # 128, # experiment (около 100 надо брать 2 степени)
+  output_dim = 128, # 128, # experiment (около 100 надо брать 2 степени)
   activation = 'relu', # rectifier activation functon
 ))
+# Можно еще один слой добавить и тогда получить больше 90% точности
+# classifier.add(Dense(
+#  output_dim = 128, # 128, # experiment (около 100 надо брать 2 степени)
+#  activation = 'relu', # rectifier activation functon
+# ))
   # output layer
 classifier.add(Dense(
   output_dim = 1, # cat or dog
