@@ -45,7 +45,7 @@ classifier.add(Convolution2D(
 # и получится Pooling Layer , который нужно будет в вектор превратить
 # и потом передать в Full Connected Layers
 classifier.add(MaxPooling2D(
-  pool_size = (2, 2) # рекомендованное значение чтобы не терять данные
+  pool_size = (2, 2) # 2x2 рекомендованное значение чтобы не терять данные
 ))
 
 # Step 3 - Flattening # берем все Feature Maps и в векторз запихиваем =)
@@ -56,7 +56,7 @@ classifier.add(Flatten()) # keras сам поймет, что нужно дел�
 
 # Step - 4 Full Connection # создаем полно связанный граф
 classifier.add(Dense(
-  output_dim = 128, # experiment (около 100 надо брать 2 степени)
+  output_dim = 128, # 128, # experiment (около 100 надо брать 2 степени)
   activation = 'relu', # rectifier activation functon
 ))
   # output layer
@@ -64,6 +64,61 @@ classifier.add(Dense(
   output_dim = 1, # cat or dog
   activation = 'sigmoid', # sigmoid
 ))
+
+# Compiling the CNN
+classifier.compile(
+  optimizer = 'adam', # метод оптимизации
+  loss = 'binary_crossentropy', # так как только 2 класса могут быть (cadecorical_)
+  metrics = ['accuracy'] # метод измерения качества модели
+)
+
+# Part 2 - Fitting the CNN to the images
+# google => keras documentation => Preprocessing => ImageDataGenerator
+# добавляет новые изображения, берет твои и модифицирует их как хочет =)
+from keras.preprocessing.image import ImageDataGenerator
+
+# чтобы не было переобучения, мы искуственно накручиваем себе новых
+# изображений, которые будут случайно транформированы, будет выше точность
+train_datagen = ImageDataGenerator( # randomly applying transformations
+  rescale = 1./255, # пиксели 0 - 255, модифицируем к интервалу [0, 1]
+  shear_range = 0.2, # shearing transformations (скосы, наклоны картинки)
+  zoom_range = 0.2, # zoomes
+  horizontal_flip = True) # перевернуть относительно горизонтали
+
+# для проверки не нужно ничего трансормировать, только привести пиксели
+# из вида [0, 255] к [0, 1]
+test_datagen = ImageDataGenerator(rescale = 1./255)
+
+# считываем изображения, преобразуем их к 64х64
+training_set = train_datagen.flow_from_directory(
+  'dataset/training_set', # file path to folder with images
+  target_size = (64, 64), # размер входного изображения
+  batch_size = 32, #32 количество случайных изображений, после которого
+    # обновляем веса нейронки (коррекция весов)
+  class_mode = 'binary') # количество классов 2 = binary!
+# после выполнения => Found 8000 images belonging to 2 classes.
+
+test_set = test_datagen.flow_from_directory(
+  'dataset/test_set',  # file path to folder with images
+  target_size = (64, 64), # размер входного изображения(первый слой сети)
+  batch_size = 32, #32 количество случайных изображений, после которого
+    # обновляем веса нейронки (коррекция весов)
+  class_mode='binary') # количество классов 2 = binary!
+# после выполнения => Found 2000 images belonging to 2 classes.
+
+classifier.fit_generator(
+  training_set, # набор изображений для тренеровок
+  steps_per_epoch = 8000,
+  epochs = 25,
+  validation_data = test_set,# набор изображений для тестирования качества
+  validation_steps = 2000)
+
+
+
+
+
+
+
 
 
 
